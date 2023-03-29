@@ -1,6 +1,7 @@
 import serial
 import numpy as np
 import serial.tools.list_ports
+import os
 
 
 def open_serial_port(port=None, baudrate=None):
@@ -28,17 +29,31 @@ def read_serial_port(ser):
     :param ser: serial port object to read from
     :return: numpy array of 16 integers with the timestamps in microseconds of the rising edges of the signal
     """
-    deltat = np.array([])
-    read = False
-    while not read:
-        signal = ser.read(100)
+    timestamps = np.char.array(["A", "b"])
+    while not (np.char.array(timestamps).isdigit().all() and timestamps.shape[0] == 16):
+        signal = ser.read(1)
         signal += ser.read(ser.inWaiting())
         timestamps = np.array(signal.decode("ascii").split("\r")[:-1])
-        if timestamps.shape[0] <= 16:
-            timestamps = timestamps.astype(int)
-            deltat = timestamps[1::2]-timestamps[0::2]
-            read = True
-    return deltat
+    timestamps = timestamps.astype(int)
+    return (timestamps[1::2]-timestamps[0::2])*12.5/1000
+
+def write_port_data_to_csv(data, filename):
+    """
+    Write the data from the serial port to a csv file. The data is written in a column format.
+    :param ser: serial port object to read from
+    :param filename: filename of the csv file
+    :return: None
+    """
+    if not os.path.exists(filename):
+        with open(filename, 'w') as f:
+            pass
+    with open(filename, 'a') as f:
+        for i in data:
+            f.write(str(i) + '\n')
+
 
 if __name__ == '__main__':
-    pass
+    import sys
+    serial = open_serial_port()
+    while True:
+        data = read_serial_port(serial)
