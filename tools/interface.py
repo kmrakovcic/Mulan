@@ -20,6 +20,8 @@ def open_serial_port(port=None, baudrate=None):
                 port = ports
     if baudrate is None:
         baudrate = 115200
+    if port is None:
+        raise ValueError("No serial port found")
     ser = serial.Serial(port, baudrate, timeout=1)
     return ser
 
