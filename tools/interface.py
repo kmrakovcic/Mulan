@@ -65,7 +65,7 @@ def data_to_csv(data, filename):
             f.write(str(i) + '\n')
 
 
-def port_to_csv(filename):
+def port_to_csv(filename="data.csv"):
     """
     Write the data from the serial port to a csv file. The data is written in a column format.
     :param ser: serial port object to read from
@@ -109,7 +109,10 @@ def port_to_csv(filename):
     p2.start()
     p1.join()
     p2.join()
+    return p1, p2
+
 
 
 if __name__ == '__main__':
-    port_to_csv("../test_data.csv")
+    p1, p2 = port_to_csv("../data.csv")
+    print ("test")
