@@ -65,8 +65,9 @@ def read_data(filename="data.csv"):
 
 
 def app(filename="data.csv"):
-    lower_cutoff = 0.75
-    higher_cutoff = 9
+    #lower_cutoff = 0.75
+    lower_cutoff = 0.25
+    higher_cutoff = 7
     # initialise a window.
     root = Tk()
     root.config(background='white')
@@ -77,8 +78,9 @@ def app(filename="data.csv"):
     fig = Figure()
 
     ax = fig.add_subplot(111)
-    ax.set_xlabel("X axis")
-    ax.set_ylabel("Y axis")
+    ax.set_xlabel(r"t[$\mu s$]")
+    ax.set_ylabel("counts")
+    ax.grid()
 
     graph = FigureCanvasTkAgg(fig, master=root)
     graph.get_tk_widget().pack(side="top", fill='both', expand=True)
@@ -87,10 +89,14 @@ def app(filename="data.csv"):
         while continuePlotting:
             ax.cla()
             ax.grid()
-            data = np.array(raw_data)[np.logical_and(np.array(raw_data) < higher_cutoff, np.array(raw_data) > lower_cutoff)]
+            ax.set_xlabel(r"t[$\mu s$]")
+            ax.set_ylabel("counts")
+            raw_data_tmp = np.array(raw_data).copy()
+            data = raw_data_tmp[np.logical_and(raw_data_tmp < higher_cutoff, raw_data_tmp > lower_cutoff)]
             if data.size > 0:
                 counts, bins, x_fit, y_fit, w, tau, w_err, tau_err = analyze.fit_and_calculate_histogram(data, 100, lower_cutoff=lower_cutoff, higher_cutoff=higher_cutoff)
-                counts = (counts / x_fit.size) / (bins[1] - bins[0])
+                y_fit = y_fit * (bins[1] - bins[0]) * x_fit.size
+                #counts = (counts / x_fit.size) / (bins[1] - bins[0])
                 ax.bar(bins[:-1] + (bins[1] - bins[0]) / 2, counts, width=bins[1] - bins[0])
                 ax.plot(x_fit, y_fit, color="r")
             else:
