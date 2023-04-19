@@ -247,9 +247,14 @@ def app(filename="data.csv"):
     higher_cutoff = 7
     n_bins = 100
     # initialise a window.
+
+
     root = Tk()
     root.config(background='white')
-    root.geometry("1800x800")
+    #root.geometry("1800x800")
+    #root.attributes('-fullscreen', True)
+    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+    root.geometry("%dx%d+0+0" % (w, h))
     root.title("Muon Detector")
     # create a label.
     live_label = Label(root, text="Idle", bg='white', font=("Helvetica", 16))
@@ -268,25 +273,37 @@ def app(filename="data.csv"):
     graph = FigureCanvasTkAgg(fig, master=frame_plots)
     graph.get_tk_widget().pack(side="left", fill="both", expand=True)
 
+    frame_plots1 = Frame(frame_plots)
     fig2 = Figure()
-    ax1 = fig2.add_subplot(211)
+    ax1 = fig2.add_subplot(121)
     ax1.set_xlabel(r"$\tau$")
     ax1.set_yticks([])
     ax1.set_ylim(bottom=0, top=1.1)
     ax1.title.set_text("Muon lifetime estimation")
     ax1.text(0.5, 0.5, "Idle", horizontalalignment='center', verticalalignment='center')
 
-    ax2 = fig2.add_subplot(212)
+    ax2 = fig2.add_subplot(122)
     ax2.set_xlabel(r"w")
     ax2.set_yticks([])
     ax2.set_ylim(bottom=0, top=1.1)
     ax2.title.set_text("Signal ratio estimation")
     ax2.text(0.5, 0.5, "Idle", horizontalalignment='center', verticalalignment='center')
-
     fig2.tight_layout()
 
-    graph1 = FigureCanvasTkAgg(fig2, master=frame_plots)
-    graph1.get_tk_widget().pack(side="right", fill="both", expand=True)
+    graph1 = FigureCanvasTkAgg(fig2, master=frame_plots1)
+    graph1.get_tk_widget().pack(side="top", fill="both", expand=True)
+
+    fig3 = Figure()
+    ax3 = fig3.add_subplot(111)
+    ax3.set_xlabel(r"w")
+    ax3.set_yticks([])
+    ax3.set_ylim(bottom=0, top=1.1)
+    ax3.title.set_text("Signal ratio estimation")
+    ax3.text(0.5, 0.5, "Idle", horizontalalignment='center', verticalalignment='center')
+    graph2 = FigureCanvasTkAgg(fig3, master=frame_plots1)
+    graph2.get_tk_widget().pack(side="bottom", fill="both", expand=True)
+
+    frame_plots1.pack(side="right", fill="both", expand=True)
 
     count_frame = Frame(root)
     count_lab1 = Label(count_frame, text="Idle", bg='white', font=(20))
