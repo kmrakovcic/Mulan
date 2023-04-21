@@ -312,7 +312,7 @@ def app(filename="data.csv"):
         if continueCollecting:
             continueCollecting = False
             b_collect.config(text="Start Collecting", bg="green", fg="white")
-            if not continueFFwd or not continueLive:
+            if not (continueFFwd or continueLive):
                 b_exit["state"] = "normal"
         else:
             continueCollecting = True
