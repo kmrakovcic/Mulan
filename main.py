@@ -293,7 +293,8 @@ def app(filename="data.csv"):
             time.sleep(0.1)
             b_ffwd.config(text="Start FFwd", bg="green", fg="white")
             b_live["state"] = "normal"
-            b_exit["state"] = "normal"
+            if not continueCollecting:
+                b_exit["state"] = "normal"
         else:
             continueFFwd = True
             continueLive = False
@@ -311,7 +312,8 @@ def app(filename="data.csv"):
         if continueCollecting:
             continueCollecting = False
             b_collect.config(text="Start Collecting", bg="green", fg="white")
-            b_exit["state"] = "normal"
+            if not continueFFwd or not continueLive:
+                b_exit["state"] = "normal"
         else:
             continueCollecting = True
             b_collect.config(text="Stop Collecting", bg="red", fg="white")
@@ -386,13 +388,13 @@ def app(filename="data.csv"):
     frame_plots1.pack(side="right", fill="both", expand=True)
 
     count_frame = Frame(root)
-    count_lab1 = Label(count_frame, text="Idle", bg='white', font=20)
+    count_lab1 = Label(count_frame, text="Idle", bg='white', font=("Arial", 20))
     muons_lab1 = Label(count_frame, text="Muons", bg='white', font=("Arial", 25))
     muons_lab1.pack(side="top", fill="both", expand=False)
     count_lab1.pack(side="top", fill="both", expand=False)
 
     decayed_lab1 = Label(count_frame, text="Decayed", bg='white', font=("Arial", 25))
-    count_lab2 = Label(count_frame, text="Idle", bg='white', font=20)
+    count_lab2 = Label(count_frame, text="Idle", bg='white', font=("Arial", 20))
 
     decayed_lab1.pack(side="top", fill="both", expand=False)
     count_lab2.pack(side="top", fill="both", expand=False)
