@@ -147,16 +147,16 @@ def app(filename="data.csv"):
             raw_data_tmp = np.array(raw_data).copy()
             if continueFFwd:
                 where_mions = np.argwhere(np.logical_and(raw_data_tmp < higher_cutoff, raw_data_tmp > lower_cutoff)).reshape(-1)
-                if where_mions.size < count_ffwd:
-                    count_ffwd = 1
+                if where_mions.size <= count_ffwd:
+                    count_ffwd = 2
                     time_distribution = {"tau": [], "tau_err": [], "w": [], "w_err": [], "n": []}
-                else:
-                    raw_data_tmp = raw_data_tmp[:where_mions[count_ffwd]]
-                    count_ffwd += np.random.randint(1, 20)
+
+                raw_data_tmp = raw_data_tmp[:where_mions[count_ffwd]]
+                count_ffwd += np.random.randint(1, 20)
             data = raw_data_tmp[np.logical_and(raw_data_tmp < higher_cutoff, raw_data_tmp > lower_cutoff)]
             count_lab1.config(text=str(raw_data_tmp.size))
             count_lab2.config(text=str(data.size))
-            if data.size > 0:
+            if data.size > 1:
                 counts, bins, x_fit, y_fit, w, tau, w_err, tau_err = analyze.fit_and_calculate_histogram(data, n_bins, lower_cutoff=lower_cutoff, higher_cutoff=higher_cutoff)
                 time_distribution["tau"].append(tau)
                 time_distribution["tau_err"].append(tau_err)
@@ -199,11 +199,12 @@ def app(filename="data.csv"):
                 ax3.set_xlabel(r"n")
                 ax3.set_ylabel(r"$\tau$")
                 ax3.set_ylim(top=3.2, bottom=1.2)
+                ax3.set_xlim(left=time_distribution["n"][0], right=time_distribution["n"][-1]+1)
                 ax3.fill_between(time_distribution["n"],
                                  np.array(time_distribution["tau"])+np.array(time_distribution["tau_err"]),
                                  np.array(time_distribution["tau"])-np.array(time_distribution["tau_err"]), alpha=.6, color='orange')
                 ax3.plot(time_distribution["n"], time_distribution["tau"], color="r", linestyle="-", linewidth=1, label=r"$\tau$")
-                ax3.hlines(y=2.2, xmin=0, xmax=time_distribution["n"][-1], color='b', linestyle='--', linewidth=1, label=r"$\tau_{exp}$")
+                ax3.hlines(y=2.2, xmin=time_distribution["n"][0], xmax=time_distribution["n"][-1], color='b', linestyle='--', linewidth=1, label=r"$\tau_{exp}$")
                 ax3.legend()
                 graph2.draw()
             else:
